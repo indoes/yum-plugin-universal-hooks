@@ -45,15 +45,21 @@ def _run_dir(dir, conduit, args = ''):
     for script in sorted(glob.glob(dir + "/*")):
         if (os.access(script, os.X_OK)):
 
-            # TODO/YAGNI?: if exit is ??? raise PluginYumExit("!!!! " + script + " said it was time to stop");
             if (len(args)):
                 exit = os.system(script + ' ' + args)
                 if(exit != 0):
-                    conduit.info(2, "!!!! \"" + script + ' ' + args + "\" did not exit cleanly: " + str(exit))
+                                        if(exit == 65280):
+                                                raise PluginYumExit("!!!! \"" + script + ' ' + args + "\" said it was time to stop")
+                                        else:
+                                                conduit.info(2, "!!!! \"" + script + ' ' + args + "\" did not exit cleanly: " + str(exit))
             else:
                 exit = os.system(script)
                 if(exit != 0):
-                    conduit.info(2, "!!!! " + script + " did not exit cleanly: " + str(exit))
+                                        if(exit == 65280):
+                                                raise PluginYumExit("!!!! " + script + " said it was time to stop")
+                                        else:
+                                                conduit.info(2, "!!!! " + script + " did not exit cleanly: " + str(exit))
+
         else:
             conduit.info(2, "!!!! " + script + ' is not executable')
 
@@ -83,7 +89,7 @@ def _run_pkg_dirs(base_dir, conduit, slot):
         #       Doing a reinstall member.current_state was 70 which means not installed per http://yum.baseurl.org/api/yum-3.2.26/yum.constants-module.html (which can be brought in via 'from yum.constants import *').
 
         pkg = member.name
-        pkgs_file_path.write(pkg + "\n") 
+        pkgs_file_path.write(pkg + "\n")
         pkgs_file_path.flush()
 
         _run_dir(base_dir + "/pkgs/" + pkg + "/" + slot, conduit)
