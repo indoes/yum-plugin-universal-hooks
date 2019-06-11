@@ -1,8 +1,8 @@
 Name: yum-plugin-universal-hooks
 Version: 0.1
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4598 for more details
-%define release_prefix 9
-Release: %{release_prefix}%{?dist}.cpanel
+%define release_prefix 10
+Release: %{?release_prefix}
 Summary: Yum plugin to run arbitrary commands at any slot. For slots involving package transactions it can be limited to a specific name or glob.
 
 Group: Development/Tools
@@ -34,9 +34,12 @@ rm -rf %{buildroot}
 
 %changelog
 
+* Mon Jun 10 2019 indoes <mock@localhost> - 0.1-10
+- Added raise PluginYumExit('Goodbye') if exit code of script is 255
+
 * Fri Sep 16 2016 Darren Mobley <darren@cpanel.net> - 0.1-9
 - HB-1952: Added support for sending an argument of --pkglist=/path/to/file
-  that has a line by line list of each rpm package being handled by the 
+  that has a line by line list of each rpm package being handled by the
   current operation to the wildcard scripts
 
 * Mon Jun 20 2016 Dan Muey <dan@cpanel.net> - 0.1-8
@@ -59,7 +62,7 @@ rm -rf %{buildroot}
 * Tue Mar 10 2015 Dan Muey <dan@cpanel.net> - 0.1-3
 - use yum_pluginslib instead of _libdir for the plugins path
 
-* Thu Mar 06 2015 Dan Muey <dan@cpanel.net> - 0.1-2
+* Fri Mar 06 2015 Dan Muey <dan@cpanel.net> - 0.1-2
 - path fixes
 
 * Thu Mar 05 2015 Dan Muey <dan@cpanel.net> - 0.1-1
